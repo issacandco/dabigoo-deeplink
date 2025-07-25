@@ -60,6 +60,16 @@
             font-size: 0.9em;
             opacity: 0.8;
         }
+        #debug {
+            margin-top: 20px;
+            font-size: 0.8em;
+            opacity: 0.7;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 10px;
+            border-radius: 5px;
+            font-family: monospace;
+            word-break: break-all;
+        }
     </style>
 </head>
 <body>
@@ -72,19 +82,84 @@
             <a href="https://apps.apple.com/app/your-app-id" class="btn">App Store</a>
             <a href="https://play.google.com/store/apps/details?id=your.package.name" class="btn">Play Store</a>
         </div>
+        <div id="debug"></div>
     </div>
 
     <script>
         // Get URL parameters
         const urlParams = new URLSearchParams(window.location.search);
-        const path = urlParams.get('path') || '';
-        const data = urlParams.get('data') || '';
         
-        // Construct deep link URL
-        const deepLinkUrl = `kindred://open${path ? '/' + path : ''}${data ? '?data=' + encodeURIComponent(data) : ''}`;
+        // Extract all parameters and build the deep link
+        function buildDeepLink() {
+            const params = {};
+            
+            // Get all URL parameters
+            for (const [key, value] of urlParams.entries()) {
+                params[key] = value;
+            }
+            
+            // Build the deep link URL
+            let deepLinkUrl = 'kindred://open';
+            
+            // Add query parameters if they exist
+            const queryParams = new URLSearchParams();
+            
+            // Handle specific parameters based on your app's routing needs
+            if (params.action) {
+                queryParams.append('action', params.action);
+            }
+            if (params.userId) {
+                queryParams.append('userId', params.userId);
+            }
+            
+            // Add any other parameters
+            Object.keys(params).forEach(key => {
+                if (key !== 'action' && key !== 'userId') {
+                    queryParams.append(key, params[key]);
+                }
+            });
+            
+            // Append query string if parameters exist
+            if (queryParams.toString()) {
+                deepLinkUrl += '?' + queryParams.toString();
+            }
+            
+            return deepLinkUrl;
+        }
+        
+        // Alternative approach: Pass everything as a single data parameter
+        function buildDeepLinkWithData() {
+            const params = {};
+            
+            // Get all URL parameters
+            for (const [key, value] of urlParams.entries()) {
+                params[key] = value;
+            }
+            
+            // Build the deep link URL with data parameter
+            let deepLinkUrl = 'kindred://open';
+            
+            if (Object.keys(params).length > 0) {
+                deepLinkUrl += '?data=' + encodeURIComponent(JSON.stringify(params));
+            }
+            
+            return deepLinkUrl;
+        }
+        
+        // Choose your preferred approach
+        const deepLinkUrl = buildDeepLink(); // or buildDeepLinkWithData()
+        
+        // Debug display
+        document.getElementById('debug').innerHTML = `
+            <strong>Original URL:</strong><br>${window.location.href}<br><br>
+            <strong>Generated Deep Link:</strong><br>${deepLinkUrl}<br><br>
+            <strong>URL Params:</strong><br>${JSON.stringify(Object.fromEntries(urlParams.entries()), null, 2)}
+        `;
         
         // Function to attempt opening the app
         function openApp() {
+            console.log('Attempting to open app with:', deepLinkUrl);
+            
             // Try to open the app
             window.location.href = deepLinkUrl;
             
