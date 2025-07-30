@@ -5,130 +5,285 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kindred - Open App</title>
     <style>
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        * {
             margin: 0;
-            padding: 20px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+            background: #ffffff;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            color: white;
+            color: #2d3748;
+            position: relative;
+            overflow: hidden;
         }
+        
+        /* Subtle background pattern */
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(60, 55, 255, 0.03) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(60, 55, 255, 0.03) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(60, 55, 255, 0.02) 0%, transparent 50%);
+            z-index: -1;
+        }
+        
         .container {
             text-align: center;
-            max-width: 400px;
-            background: rgba(255, 255, 255, 0.1);
-            padding: 40px;
+            max-width: 480px;
+            width: 90%;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 60px 40px;
+            border-radius: 24px;
+            box-shadow: 
+                0 20px 40px rgba(60, 55, 255, 0.08),
+                0 4px 12px rgba(0, 0, 0, 0.04);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(60, 55, 255, 0.08);
+            position: relative;
+        }
+        
+        .logo {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #3c37ff 0%, #5b56ff 100%);
             border-radius: 20px;
-            backdrop-filter: blur(10px);
+            margin: 0 auto 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            font-weight: 700;
+            color: white;
+            letter-spacing: -1px;
+            box-shadow: 0 8px 24px rgba(60, 55, 255, 0.2);
         }
+        
         h1 {
-            margin-bottom: 20px;
-            font-size: 2.5em;
+            font-size: 2.8rem;
+            font-weight: 700;
+            margin-bottom: 16px;
+            background: linear-gradient(135deg, #3c37ff 0%, #5b56ff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -0.02em;
         }
-        p {
-            margin-bottom: 30px;
-            font-size: 1.2em;
-            opacity: 0.9;
+        
+        .subtitle {
+            font-size: 1.1rem;
+            color: #64748b;
+            margin-bottom: 40px;
+            font-weight: 400;
+            line-height: 1.6;
         }
+        
+        .loading-indicator {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 32px;
+            opacity: 0.8;
+        }
+        
+        .loading-dot {
+            width: 8px;
+            height: 8px;
+            background: #3c37ff;
+            border-radius: 50%;
+            animation: loadingPulse 1.4s ease-in-out infinite both;
+        }
+        
+        .loading-dot:nth-child(1) { animation-delay: -0.32s; }
+        .loading-dot:nth-child(2) { animation-delay: -0.16s; }
+        .loading-dot:nth-child(3) { animation-delay: 0s; }
+        
+        @keyframes loadingPulse {
+            0%, 80%, 100% {
+                transform: scale(0.6);
+                opacity: 0.4;
+            }
+            40% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+        
         .buttons {
             display: flex;
-            gap: 15px;
+            gap: 16px;
             justify-content: center;
             flex-wrap: wrap;
+            margin-top: 32px;
         }
+        
         .btn {
-            padding: 12px 24px;
-            background: rgba(255, 255, 255, 0.2);
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            border-radius: 25px;
+            padding: 16px 32px;
+            background: #3c37ff;
+            border: none;
+            border-radius: 16px;
             color: white;
             text-decoration: none;
             font-weight: 600;
-            transition: all 0.3s ease;
-            display: inline-block;
+            font-size: 1rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 16px rgba(60, 55, 255, 0.3);
+            position: relative;
+            overflow: hidden;
         }
+        
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+        
+        .btn:hover::before {
+            left: 100%;
+        }
+        
         .btn:hover {
-            background: rgba(255, 255, 255, 0.3);
+            background: #2d28e6;
             transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(60, 55, 255, 0.4);
         }
+        
+        .btn:active {
+            transform: translateY(0);
+        }
+        
+        .btn-secondary {
+            background: transparent;
+            color: #3c37ff;
+            border: 2px solid #3c37ff;
+            box-shadow: none;
+        }
+        
+        .btn-secondary:hover {
+            background: #3c37ff;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(60, 55, 255, 0.3);
+        }
+        
         #status {
-            margin-top: 20px;
-            font-size: 0.9em;
-            opacity: 0.8;
+            margin-top: 32px;
+            font-size: 0.95rem;
+            color: #64748b;
+            font-weight: 500;
         }
-        #debug {
-            margin-top: 20px;
-            font-size: 0.8em;
-            opacity: 0.7;
-            background: rgba(0, 0, 0, 0.2);
-            padding: 10px;
-            border-radius: 5px;
-            font-family: monospace;
-            word-break: break-all;
+        
+        .store-links {
+            margin-top: 24px;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.4s ease;
+        }
+        
+        .store-links.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .icon {
+            width: 20px;
+            height: 20px;
+            fill: currentColor;
+        }
+        
+        @media (max-width: 480px) {
+            .container {
+                padding: 40px 24px;
+                margin: 20px;
+            }
+            
+            h1 {
+                font-size: 2.2rem;
+            }
+            
+            .buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .btn {
+                width: 100%;
+                max-width: 280px;
+                justify-content: center;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
+        <div class="logo">K</div>
         <h1>Kindred</h1>
-        <p>Opening your app...</p>
-        <div id="status">If the app doesn't open automatically, use the buttons below:</div>
-        <div class="buttons">
-            <a href="#" id="openApp" class="btn">Open App</a>
-            <a href="https://apps.apple.com/app/your-app-id" class="btn">App Store</a>
-            <a href="https://play.google.com/store/apps/details?id=your.package.name" class="btn">Play Store</a>
+        <p class="subtitle">Opening your app in a moment...</p>
+        
+        <div class="loading-indicator">
+            <div class="loading-dot"></div>
+            <div class="loading-dot"></div>
+            <div class="loading-dot"></div>
         </div>
-        <div id="debug"></div>
+        
+        <div id="status">Connecting to your app...</div>
+        
+        <div class="buttons">
+            <a href="#" id="openApp" class="btn">
+                <svg class="icon" viewBox="0 0 24 24">
+                    <path d="M12 2L2 7v10c0 5.55 3.84 9.74 9 11 5.16-1.26 9-5.45 9-11V7l-10-5z"/>
+                </svg>
+                Open Kindred
+            </a>
+        </div>
+        
+        <div class="store-links" id="storeLinks">
+            <div style="margin-bottom: 16px; color: #64748b; font-weight: 500;">
+                Don't have the app? Download it:
+            </div>
+            <div class="buttons">
+                <a href="https://apps.apple.com/app/your-app-id" class="btn btn-secondary">
+                    <svg class="icon" viewBox="0 0 24 24">
+                        <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
+                    </svg>
+                    App Store
+                </a>
+                <a href="https://play.google.com/store/apps/details?id=your.package.name" class="btn btn-secondary">
+                    <svg class="icon" viewBox="0 0 24 24">
+                        <path d="M3,20.5V3.5C3,2.91 3.34,2.39 3.84,2.15L13.69,12L3.84,21.85C3.34,21.61 3,21.09 3,20.5M16.81,15.12L6.05,21.34L14.54,12.85L16.81,15.12M20.16,10.81C20.5,11.08 20.75,11.5 20.75,12C20.75,12.5 20.53,12.9 20.18,13.18L17.89,14.5L15.39,12L17.89,9.5L20.16,10.81M6.05,2.66L16.81,8.88L14.54,11.15L6.05,2.66Z"/>
+                    </svg>
+                    Play Store
+                </a>
+            </div>
+        </div>
     </div>
 
     <script>
         // Get URL parameters
         const urlParams = new URLSearchParams(window.location.search);
         
-        // Extract all parameters and build the deep link
+        // Build the deep link URL
         function buildDeepLink() {
-            const params = {};
-            
-            // Get all URL parameters
-            for (const [key, value] of urlParams.entries()) {
-                params[key] = value;
-            }
-            
-            // Build the deep link URL
-            let deepLinkUrl = 'kindred://open';
-            
-            // Add query parameters if they exist
-            const queryParams = new URLSearchParams();
-            
-            // Handle specific parameters based on your app's routing needs
-            if (params.action) {
-                queryParams.append('action', params.action);
-            }
-            if (params.userId) {
-                queryParams.append('userId', params.userId);
-            }
-            
-            // Add any other parameters
-            Object.keys(params).forEach(key => {
-                if (key !== 'action' && key !== 'userId') {
-                    queryParams.append(key, params[key]);
-                }
-            });
-            
-            // Append query string if parameters exist
-            if (queryParams.toString()) {
-                deepLinkUrl += '?' + queryParams.toString();
-            }
-            
-            return deepLinkUrl;
-        }
-        
-        // Alternative approach: Pass everything as a single data parameter
-        function buildDeepLinkWithData() {
             const params = {};
             
             // Get all URL parameters
@@ -146,19 +301,14 @@
             return deepLinkUrl;
         }
         
-        // Choose your preferred approach
-        const deepLinkUrl = buildDeepLink(); // or buildDeepLinkWithData()
-        
-        // Debug display
-        document.getElementById('debug').innerHTML = `
-            <strong>Original URL:</strong><br>${window.location.href}<br><br>
-            <strong>Generated Deep Link:</strong><br>${deepLinkUrl}<br><br>
-            <strong>URL Params:</strong><br>${JSON.stringify(Object.fromEntries(urlParams.entries()), null, 2)}
-        `;
+        const deepLinkUrl = buildDeepLink();
         
         // Function to attempt opening the app
         function openApp() {
-            console.log('Attempting to open app with:', deepLinkUrl);
+            console.log('Attempting to open Kindred app...');
+            
+            // Update status
+            document.getElementById('status').innerHTML = 'Launching Kindred...';
             
             // Try to open the app
             window.location.href = deepLinkUrl;
@@ -169,8 +319,8 @@
             // Check if user left the page (app opened)
             document.addEventListener('visibilitychange', function() {
                 if (document.hidden) {
-                    // App likely opened
                     console.log('App opened successfully');
+                    document.getElementById('status').innerHTML = 'App opened successfully!';
                 }
             });
             
@@ -178,14 +328,15 @@
             setTimeout(function() {
                 if (Date.now() - startTime < 3100) {
                     document.getElementById('status').innerHTML = 
-                        'App not installed or unable to open. Please download:';
+                        'Unable to open the app automatically.';
+                    document.getElementById('storeLinks').classList.add('show');
                 }
             }, 3000);
         }
         
         // Auto-attempt to open app when page loads
         window.addEventListener('load', function() {
-            setTimeout(openApp, 1000);
+            setTimeout(openApp, 1500);
         });
         
         // Manual open app button
