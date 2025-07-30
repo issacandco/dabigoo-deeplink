@@ -3,7 +3,7 @@
     "relation": ["delegate_permission/common.handle_all_urls"],
     "target": {
       "namespace": "android_app",
-      "package_name": "com.issacandco.kindred.development",
+      "package_name": "com.issacandco.kindred",
       "sha256_cert_fingerprints": [
         "7F:82:33:01:F6:54:D7:00:0F:E8:99:07:62:E0:38:99:B4:68:8E:0B:17:31:B9:9B:EA:BE:26:BE:F2:0A:B8:C4"
       ]
